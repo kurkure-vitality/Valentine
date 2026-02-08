@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💕</title>
+
+<style>
+body{
+    background: linear-gradient(#ffe6f0,#ffd6eb,#ffcce6);
+    font-family: "Comic Sans MS", cursive;
+    text-align:center;
+    height:100vh;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+}
+
+/* intro teddy image */
+.intro-img{
+    width:240px;
+    border-radius:25px;
+    box-shadow:0 15px 35px rgba(255,0,100,0.35);
+}
+
+h1{ color:#ff2e6e; }
+
+/* button playground */
+.btn-container{
+    position:relative;
+    width:90vw;
+    max-width:420px;
+    height:260px;
+    margin-top:20px;
+    overflow:hidden;
+}
+
+button{
+    padding:15px 30px;
+    border-radius:40px;
+    border:none;
+    font-size:20px;
+    cursor:pointer;
+    position:absolute;
+    transition:0.25s ease;
+    white-space:nowrap;
+}
+
+#yesBtn{
+    background:#ff4d88;
+    color:white;
+    left:20%;
+    top:120px;
+}
+
+#noBtn{
+    background:#9e9e9e;
+    color:white;
+    left:60%;
+    top:120px;
+}
+
+button:active{ transform:scale(0.9); }
+
+/* slideshow */
+.slideshow{
+    width:260px;
+    height:340px;
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(255,0,100,0.35);
+    margin:15px 0;
+}
+
+.slideshow img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    animation:fade 2.5s infinite;
+}
+
+@keyframes fade{
+    0%{opacity:0.2}
+    20%{opacity:1}
+    80%{opacity:1}
+    100%{opacity:0.2}
+}
+
+/* floating hearts */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation:float 6s linear infinite;
+    opacity:0.7;
+}
+
+@keyframes float{
+    from{transform:translateY(0);}
+    to{transform:translateY(-110vh);}
+}
+</style>
+</head>
+
+<body>
+
+<img src="teddy.jpg" class="intro-img">
+<h1>Will you be my Valentine? 💗</h1>
+
+<div class="btn-container" id="area">
+    <button id="yesBtn" onclick="showLove()">Yes 💕</button>
+    <button id="noBtn" ontouchstart="moveNo()" onmouseover="moveNo()">No 😢</button>
+</div>
+
+<script>
+let yesSize = 1;
+
+/* runaway NO button */
+function moveNo(){
+    const btn = document.getElementById("noBtn");
+    const area = document.getElementById("area");
+
+    const maxX = area.clientWidth - btn.offsetWidth;
+    const maxY = area.clientHeight - btn.offsetHeight;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    btn.style.left = x + "px";
+    btn.style.top = y + "px";
+
+    yesSize += 0.12;
+    document.getElementById("yesBtn").style.transform = `scale(${yesSize})`;
+}
+
+/* YES pressed */
+function showLove(){
+    document.body.innerHTML = `
+        <h1 style="font-size:3rem;color:#ff2e6e">YAYYYY 💖</h1>
+
+        <div class="slideshow">
+            <img id="slide" src="photo1.jpg">
+        </div>
+
+        <h2>See you soon cutie 🌸🥰</h2>
+
+        <audio id="loveSong" src="song.mp3" loop></audio>
+    `;
+
+    startSlideshow();
+    createHearts();
+    playMusic();
+}
+
+/* slideshow */
+function startSlideshow(){
+    const images = ["photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg"];
+    let i = 0;
+
+    setInterval(()=>{
+        i = (i+1) % images.length;
+        document.getElementById("slide").src = images[i];
+    },2500);
+}
+
+/* hearts */
+function createHearts(){
+    setInterval(()=>{
+        const heart=document.createElement("div");
+        heart.className="heart";
+        heart.innerHTML=["💗","💖","💕","💞","💓"][Math.floor(Math.random()*5)];
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(20+Math.random()*25)+"px";
+        heart.style.animationDuration=(4+Math.random()*4)+"s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),7000);
+    },250);
+}
+
+/* music play (mobile safe) */
+function playMusic(){
+    const song = document.getElementById("loveSong");
+    song.volume = 0.7;
+
+    const playPromise = song.play();
+
+    if(playPromise !== undefined){
+        playPromise.catch(()=>{
+            document.body.addEventListener("click",()=>song.play(),{once:true});
+        });
+    }
+}
+</script>
+
+</body>
+  </html>
